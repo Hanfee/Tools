@@ -1,0 +1,50 @@
+#!/bin/sh
+
+CC=gcc
+CPP=g++
+FLAG=0;
+PRONAME=$0
+if [ -z $1 ];then
+    echo -e "\033[0;31mUsage : $PRONAME < C-Programs File's name >\033[0m"
+    exit 1
+fi
+FLAGS="$* -g -lpthread -W"
+
+FILN=$1
+C_FILO=$(echo -e "$1"|sed 's/\.[Cc]$//g')
+##Add by wuhan
+
+CPP_FILO=$(echo -e "$1" |sed 's/\.[cC][pP]\{1,2\}$//g')
+#end
+
+if [ ${FILN} == ${C_FILO} ];then
+    #echo -e "\033[0;31m Input filename is not a C-Program or CPP-Program file !\033[0m"
+    if [ ${FILN} == ${CPP_FILO} ];then
+        echo -e "\033[0;31m Input filename is not a C-Program or CPP-Program file ! \033[0m"
+    else 
+        FLAG=1
+    fi
+else
+    FLAG=2
+fi
+#echo "Compiling ..."
+if [ 1 == $FLAG ];then
+    echo -e "CPP    \033[0;34m${FLAGS}\033[0m"
+    ${CPP} -o ${CPP_FILO} ${FLAGS}
+fi
+if [ 2 == $FLAG ];then
+    echo -e "CC     \033[0;35m${FLAGS}\033[0m"
+    ${CC} -o ${C_FILO} ${FLAGS}
+fi
+if [ 0 -ne $? ];then
+  if [ 1 == $FLAG ];then
+    echo -e "\033[43;33 mERROR ${CPP} -o ${FILO} ${FILN} ${FLAGS}\033[0m"
+  else 
+    echo -e "\033[43;33 mERROR ${CC} -o ${FILO} ${FILN} ${FLAGS}\033[0m"
+  fi
+else
+    #echo -e "${FILO}   is OK."
+    echo -e "\033[0;32m        Completed .\033[0m"
+fi
+echo -e "\033[0;31m        $(date)\033[0m"
+exit 0
